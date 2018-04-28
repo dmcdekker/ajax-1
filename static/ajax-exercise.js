@@ -2,7 +2,6 @@
 
 
 // PART 1: SHOW A FORTUNE
-
 function showInfo(result){
   $('#fortune-text').html(result);
  } 
@@ -32,23 +31,26 @@ $("#weather-form").on('submit', showWeather);
 
 
 // PART 3: ORDER MELONS
+function updateMelons(results) {
+    if (results.code === "OK") {
+        $('#order-status').html("<p>" + results.msg + "</p>");
+    }
+    else {
+        $('#order-status').addClass("order-error");
+        $('#order-status').html("<p><b>" + results.msg + "</b></p>");
+    }
+}
 
 function orderMelons(evt) {
     evt.preventDefault();
-    
 
-    let formInputs = $("#order-form").serialize();
-    $.post("/order-melons.json", formInputs, function (results) {
-        if (results.code == "OK") {
-            $('#order-status').html("<p>" + results.msg + "</p>");
-        }
-        else {
-            $('#order-status').addClass("order-error");
-            $('#order-status').html("<p><b>" + results.msg + "</b></p>");
-        }
-    });
+    let formInputs = {
+        "melon_type": $("#melon-type-field").val(),
+        "qty": $("#qty-field").val()
+    };
+
+    $.post("/order-melons.json", formInputs, updateMelons);
 }
 
 $("#order-form").on('submit', orderMelons);
-
 
